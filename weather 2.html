@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <title>weather</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+    />
+
+    <link rel="stylesheet" href="weatherapp.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="border">
+        <form id="enterCity">
+          <div class="row">
+            <div class="search">
+              <div class="col">
+                <input
+                  class="city"
+                  type="text"
+                  placeholder="City!"
+                  id="cityLine"
+                />
+              </div>
+              <div class="col-3">
+                <input
+                  class="button"
+                  type="submit"
+                  value="Subscribe"
+                  id="submitCity"
+                />
+              </div>
+            </div>
+            <div class="col">
+              <button class="button" id="button-here">Here</button>
+            </div>
+          </div>
+        </form>
+        <div class="row top">
+          <div class="col-8">
+            <ul class="med">
+              <li class="native-city" id="written-city"></li>
+              <li class="date">May 5</li>
+              <li class="time">14:09</li>
+              <li>Cloudy</li>
+            </ul>
+          </div>
+          <div class="col">
+            <ul class="med">
+              <li id="weather"></li>
+              <li>Humidity: <span id="humidity"></span>%</li>
+              <li>Wind: <span id="wind"></span> km/h</li>
+              <li>Temp: <span id="temperature"></span> °C</li>
+            </ul>
+          </div>
+        </div>
+        <div class="row days">
+          <div class="col">Mon</div>
+          <div class="col">Tue</div>
+          <div class="col">Wed</div>
+          <div class="col">Thu</div>
+          <div class="col">Fri</div>
+          <div class="col">Sat</div>
+          <div class="col">Sun</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let firstChal = new Date();
+      let todayDate = document.querySelector(" .date");
+      let todayTime = document.querySelector(" .time");
+      let months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "June",
+        "July",
+        "August",
+        "Sep",
+        "Nov",
+        "Dec",
+      ];
+      let month = months[firstChal.getMonth()];
+      let date = firstChal.getDate();
+      let hour = firstChal.getHours();
+      if (hour < 10) {
+        hour = `0${hour} `;
+      }
+      let minute = firstChal.getMinutes();
+      if (minute < 10) {
+        minute = `0${minute} `;
+      }
+      todayDate.innerHTML = `${month}  ${date}`;
+      todayTime.innerHTML = `${hour} : ${minute}`;
+
+      function displayWeatherCondition(response) {
+        console.log(response);
+        document.querySelector("#written-city").innerHTML = response.data.name; // выбираем линию где будет указываться город с поля ввода и сразу же говорим что там будет прописываться
+        document.querySelector("#temperature").innerHTML = Math.round(
+          response.data.main.temp
+        );
+        document.querySelector("#humidity").innerHTML =
+          response.data.main.humidity;
+        document.querySelector("#wind").innerHTML = Math.round(
+          response.data.wind.speed
+        );
+        document.querySelector("#weather").innerHTML =
+          response.data.weather[0].description.toUpperCase();
+      }
+
+      function secondChal(event) {
+        event.preventDefault();
+        // код с пред дом задания - писали слово в строке - отображалось в казаном месте
+        // let nativeCity = document.querySelector("#cityLine");
+        // let putCity = document.querySelector(" .native-city");
+        // putCity.innerHTML = `${nativeCity.value} `;
+
+        // what we will do - 1) make an  API call to openWeather API
+        // 2)Once I get a HTTP responce , we display a city weather and temperature.
+
+        let ipiKey = "959764aef958aca1c60220a4c8d8110c";
+        let city = document.querySelector("#cityLine").value; // выбираем поле ввода , что б город что мы ввели соединялся с АРІ
+        let apiUrll = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=959764aef958aca1c60220a4c8d8110c&units=metric`;
+        // console.log(apiUrll);
+        axios.get(apiUrll).then(displayWeatherCondition);
+      }
+
+      let subbmiting = document.querySelector("#enterCity");
+      subbmiting.addEventListener("submit", secondChal);
+
+      // position.coords.latitude;
+      // position.coords.longitude;
+    </script>
+  </body>
+</html>
